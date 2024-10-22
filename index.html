@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="img/back2.jpg" type="image/x-icon"> 
+</head>
+<body>
+  <div class="global">
+    <h2>Memory Game</h2>
+    <div>
+      <p id="timer">3:00</p>
+      <div class="levels">
+        <label for="level-select">Select Level:</label>
+        <select id="level-select" onchange="setLevel(this.value)">
+            <option value="easy">Easy (3 min)</option>
+            <option value="medium">Medium (2 min)</option>
+            <option value="hard">Hard (1 min)</option>
+            <option value="extreme">Extreme (40 Sec)</option>
+            <option value="impossible">Impossible (20 Sec)</option>
+        </select>
+      </div>
+    </div>
+    <div class="container">
+        <div class="game">
+        </div>
+        <div>
+          <button class="start" onclick="startGame()">Start game</button>
+          <button class="show_all" onclick="show_all()">Show All</button>
+          <button class="match_all" onclick="matchAll()">match All</button>
+        </div>
+    </div>
+    <div id="popup_win" class="modal">
+      <div class="modal-content">
+          <p class="win">You Win!</p>
+          <div class="popups">
+            <button id="popup-button" onclick="window.location.reload()">Home</button>
+            <button id="popup-button" onclick="restartGame()">Restart Game</button>  
+          </div>
+      </div>
+    </div>
+    <div id="popup_pause" class="modal">
+      <div class="modal-content">
+          <p class="paused">Game Paused</p>
+          <div class="popups">
+            <button id="popup-button" onclick="window.location.reload()">Home</button>
+            <button id="popup-button" onclick="continueGame()">Continue</button>  
+          </div>
+      </div>
+    </div>
+  </div>
+    <script src="memory.js"></script>
+</body>
+</html>
