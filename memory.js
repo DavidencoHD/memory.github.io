@@ -242,10 +242,14 @@ function setLevel(selectedLevel) {
     updateTimerDisplay();
 }
 
+function stopTimer() {
+    clearInterval(timer);
+}
+
 function startTimer() {
     timer = setInterval(function() {
         
-        if (!paused)
+        if (!paused) {
             timeRemaining--;
             updateTimerDisplay();
 
@@ -255,6 +259,9 @@ function startTimer() {
                 paused = true;
                 lose_popup(); // Mostrar mensaje de "Game Over"
             }
+        } else {
+            stopTimer();
+        }
     }, 1000);
 }
 
