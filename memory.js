@@ -25,52 +25,61 @@ const imgs = [
     { name: 'brawl12', src: 'img/brawl12.jpg' },
 ];
 
+// Imatge de fons de les cartes (revers)
 const img_back = [{ name: 'back', src: 'img/back2.jpg' }];
 
 let started = false;
 let paused = false;
 let changeButton = false;
-// Pop-up Pausa
+
+// Elements de pop-up per missatges de guanyador i pausa
 const popup_win = document.getElementById('popup_win');
 const popupPause = document.getElementById('popup_pause');
 
+// Mostra el pop-up especificat
 function showPopup(element) {
     element.style.display = 'block';
 }
 
+// Tanca el pop-up especificat
 function closePopup(element) {
     element.style.display = 'none';
 }
 
+// Mostra el missatge de Game Over
 function lose_popup() {
     let popup_lose = document.getElementById('popup_win');
     popup_lose.querySelector('.win').innerHTML = 'Game Over';
     showPopup(popup_lose);
 }
 
+// Tanca el pop-up de guanyador
 function closePopupWin() {
     popup_win.style.display = 'none';
 }
 
-// Aleatori
+// Genera un nombre aleatori entre dos valors (min i max)
 function aleatori(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+// Genera una disposició aleatòria de les cartes
 function aleatori_cartes() {
     let cartes_aleatories = [];
-    let copia_imgs = imgs.slice(); // Crear una copia de la matriz imgs
+    let copia_imgs = imgs.slice();
 
     for (let i = 0; i < imgs.length; i++) {
         let index = aleatori(0, copia_imgs.length - 1);
         cartes_aleatories.push(copia_imgs[index]);
-        copia_imgs.splice(index, 1); // Eliminar la carta seleccionada de la copia
+        copia_imgs.splice(index, 1);
     }
     return cartes_aleatories;
 }
 
+// Array de cartes barrejades
 let cartes_aleatories = aleatori_cartes();
 
+// Afegeix les cartes al tauler de joc
 function afegir_cartes(cartes_aleatories) {
     let game = document.querySelector('.game');
     
@@ -89,7 +98,6 @@ function afegir_cartes(cartes_aleatories) {
         card.appendChild(back);
         card.appendChild(front);
         
-        // Asignar correctamente las imágenes (corregido)
         back.innerHTML = `<img src="${img_back[0].src}" alt="${img_back[0].name}" name="${img_back[0].name}">`;
         front.innerHTML = `<img src="${carta.src}" alt="${carta.name}" name="${carta.name}">`;
 
@@ -97,6 +105,7 @@ function afegir_cartes(cartes_aleatories) {
     });
 }
 
+// Comprova si dues cartes seleccionades coincideixen
 function checkForMatch() {
     const flippedCards = document.querySelectorAll('.selected');
     
@@ -118,7 +127,7 @@ function checkForMatch() {
     }
 }
 
-
+// Comprova si totes les cartes han estat emparellades
 function check_all() {
     const cards = document.querySelectorAll('.card');
     let matchedCards = 0;
@@ -136,16 +145,23 @@ function check_all() {
     });
 }
 
+// Continua el joc despres de la pausa
 function continueGame() {
-    popupPause.style.display = 'none';
     paused = false;
+    popupPause.style.display = 'none';
+    if (!timer) {
+        startTimer();
+    }
 }
 
+// Pausa el joc
 function pauseGame() {
-    showPopup(popupPause);
+    stopTimer();
     paused = true;
+    showPopup(popupPause);
 }
 
+// Canvia el boto d'inici a pausa
 function changeButtonRestart() {
     let start = document.querySelector('.start');
     start.classList.add('pause');
@@ -155,6 +171,7 @@ function changeButtonRestart() {
     pause.addEventListener('click', pauseGame);
 }
 
+// Afegeix un cursor de punter a les cartes
 function addCursorPoint() {
     let img = document.querySelectorAll('.back');
     img.forEach(img => {
@@ -162,6 +179,7 @@ function addCursorPoint() {
     });
 }   
 
+// Detecta el clic a les cartes i comprova coincidències
 function clickImg() {
     let cards = document.querySelectorAll('.card');
     
@@ -176,6 +194,7 @@ function clickImg() {
     });
 }
 
+// Marca totes les cartes com a emparellades
 function matchAll() {
     if (!started) {
         return;
@@ -187,10 +206,8 @@ function matchAll() {
     check_all();
 }
 
-let i_button = 0;
-
+// Mostra o amaga totes les cartes
 function show_all() {
-    let i = 0;
     const cards = document.querySelectorAll('.card');
     cards.forEach(card => {
         if (!card.classList.contains('matched') && !card.classList.contains('flipped')) {
@@ -212,7 +229,7 @@ function show_all() {
     }
 }
 
-
+// Evita que el boto quedi enfocat despres de fer clic
 document.querySelectorAll('button').forEach(button => {
     button.addEventListener('click', function() {
         this.blur();
@@ -223,6 +240,7 @@ let timer;
 let timeRemaining;
 let level;
 
+// Estableix el nivell de dificultat
 function setLevel(selectedLevel) {
     level = selectedLevel;
 
@@ -238,15 +256,19 @@ function setLevel(selectedLevel) {
         timeRemaining = 20; // 20 segundos
     }
 
-    // Mostrar tiempo restante inicial en minutos:segundos
     updateTimerDisplay();
 }
 
+// Para el temporitzador
 function stopTimer() {
     clearInterval(timer);
+    timer = null;
 }
 
+// Inicia el temporitzador
 function startTimer() {
+    if (timer) return;
+
     timer = setInterval(function() {
         
         if (!paused) {
@@ -259,18 +281,18 @@ function startTimer() {
                 paused = true;
                 lose_popup(); // Mostrar mensaje de "Game Over"
             }
-        } else {
-            stopTimer();
         }
     }, 1000);
 }
 
+// Actualitza el visualitzador del temporitzador
 function updateTimerDisplay() {
     let minutes = Math.floor(timeRemaining / 60);
     let seconds = timeRemaining % 60;
     document.getElementById('timer').textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 }
 
+// Comença ell joc i ho gestiona tot
 function startGame() {
     started = true;
     if (!changeButton) {
@@ -287,7 +309,7 @@ function startGame() {
     document.getElementById('level-select').disabled = true;
 }
 
-
+// Al començar partida deshabilita el botó dels nivells
 function removeLevelsButtons () {
     let buttons = document.querySelectorAll('.level');
     buttons.forEach(button => {
@@ -295,34 +317,24 @@ function removeLevelsButtons () {
     });
 }
 
-
-
+// Funcio que gestiona el reseteix del joc
 function restartGame() {
-    closePopupWin(); // Cierra el popup de victoria si está abierto
-    clearInterval(timer); // Detén el temporizador si está activo
+    closePopupWin();
+    clearInterval(timer); // Detén cualquier temporizador existente
+    timer = null; // Asegúrate de que el temporizador está en estado nulo
 
-    // Reiniciar el estado del juego
-    started = false; // Reinicia el estado del juego a "no iniciado"
-    paused = false; // Reinicia el estado de pausa
+    started = false; // Reinicia el estado del juego
+    paused = false;
 
-    // Limpiar el tablero de juego
     let game = document.querySelector('.game');
-    game.innerHTML = ''; // Elimina todas las cartas del tablero
+    game.innerHTML = ''; // Limpiar el tablero de juego
 
-    // Reiniciar el temporizador con el nivel actual
-    setLevel(level); // Asegúrate de que esto utiliza la variable 'level'
+    setLevel(level); // Reiniciar el temporizador basado en el nivel actual
 
-    // Generar nuevas cartas aleatorias
-    cartes_aleatories = aleatori_cartes();
-    
-    // Agregar las nuevas cartas al tablero
-    afegir_cartes(cartes_aleatories);
-    
-    startGame(); // Inicia el juego nuevamente
+    cartes_aleatories = aleatori_cartes(); // Crear nuevas cartas
+    afegir_cartes(cartes_aleatories); // Añadir las cartas
+
+    startGame(); // Comenzar el juego de nuevo
 }
 
-
-
-
 afegir_cartes(cartes_aleatories);
-// buttonsBottom();
