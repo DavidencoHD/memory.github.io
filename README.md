@@ -30,12 +30,6 @@ Juego de memoria temático de **Brawl Stars** con 24 cartas (12 parejas). Pon a 
 
 - HTML5
 - CSS3
-- JavaScript (Vanilla)
-
-## 🌐 GitHub Pages
-
-El juego está publicado en GitHub Pages y se despliega automáticamente con cada push a la rama `main`.
-
----
+- JavaScript (Vanilla)---
 
 Proyecto personal de [DavidencoHD](https://github.com/DavidencoHD).
